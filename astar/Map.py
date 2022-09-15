@@ -354,4 +354,9 @@ class Map_Obj():
         image.show()
 
 map = Map_Obj(task=2)
-map.show_map()
+
+print("Map:", map.get_maps()[0])
+
+print(f"Mapsize: ({map.get_maps()[0][0].size}, {map.get_maps()[0].size})")
+print("Start:", map.get_start_pos())
+print("End:", map.get_goal_pos())
