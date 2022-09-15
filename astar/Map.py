@@ -302,6 +302,10 @@ class Map_Obj():
         else:
             themap[goal_pos[0]][goal_pos[1]] = ' G '
 
+    def set_path_str_marker(self, path: list[list[int, int]]):
+        for marker in path:
+            self.str_map[marker.position[0]][marker.position[1]] = ' ; '
+
     def show_map(self, themap: Union[np.ndarray, str] = None):
         """Draws `themap` as an image and shows it.
 
@@ -353,10 +357,3 @@ class Map_Obj():
         # Show image
         image.show()
 
-map = Map_Obj(task=2)
-
-print("Map:", map.get_maps()[0])
-
-print(f"Mapsize: ({map.get_maps()[0][0].size}, {map.get_maps()[0].size})")
-print("Start:", map.get_start_pos())
-print("End:", map.get_goal_pos())
