@@ -62,6 +62,15 @@ def isInSet(node, closedSet):
             return True
     return False
 
+def retrace_path(endNode):
+    path = []
+    currentNode = endNode
+    while True:
+        if currentNode.parent == None:
+            break
+        currentNode = currentNode.parent
+        path.append(currentNode)
+    return path
 
 def AStar(map_obj, start, goal):
     closedSet = []
@@ -79,14 +88,14 @@ def AStar(map_obj, start, goal):
 
     # Agenda loop
     while (len(openSet) > 0):
-        print("Openset:", len(openSet))
         inspectedNode = openSet.pop(0)
         closedSet.append(inspectedNode)
 
         if (inspectedNode.position == goal):
             # A* was successfull
             print("A* finished!")
-            break
+            return retrace_path(inspectedNode)
+            
 
         inspectedNode.generateKids(map_obj)
         for child in inspectedNode.kids:
@@ -102,4 +111,4 @@ def AStar(map_obj, start, goal):
                 if child in closedSet:
                     propegate_path_improvements(child)
     print("Failed!")
-    return evaluated
+    return []
