@@ -9,10 +9,11 @@ def distance(startPos, endPos):
 
 class AStarNode():
 
-    def __init__(self, parent=None, position=None, status=State.OPEN):
+    def __init__(self, parent=None, position=None, goal=None):
         self.position = position
         self.g = 0
-        self.h = 0
+        self.goal = goal
+        self.calculateH(goal)
         self.f = self.h + self.g
         self.parent = parent
         self.kids = []
@@ -27,19 +28,19 @@ class AStarNode():
         self.h = distance(self.position, goal) 
 
     def generateKids(self, map_obj):
-        node = AStarNode(position=[self.position[0]+1, self.position[1]])
+        node = AStarNode(position=[self.position[0]+1, self.position[1]], goal=self.goal)
         if(map_obj.get_cell_value(node.position) == 1):
             self.kids.append(node)
 
-        node = AStarNode(position=[self.position[0]-1, self.position[1]])
+        node = AStarNode(position=[self.position[0]-1, self.position[1]], goal=self.goal)
         if(map_obj.get_cell_value(node.position) == 1):
             self.kids.append(node)
 
-        node = AStarNode(position=[self.position[0], self.position[1]+1])
+        node = AStarNode(position=[self.position[0], self.position[1]+1], goal=self.goal)
         if(map_obj.get_cell_value(node.position) == 1):
             self.kids.append(node)
 
-        node = AStarNode(position=[self.position[0], self.position[1]-1])
+        node = AStarNode(position=[self.position[0], self.position[1]-1], goal=self.goal)
         if(map_obj.get_cell_value(node.position) == 1):
             self.kids.append(node)
 
@@ -77,10 +78,8 @@ def AStar(map_obj, start, goal):
     evaluated = []
 
     # Generate initial node
-    firstNode = AStarNode(position=start)
+    firstNode = AStarNode(position=start, goal=goal)
     firstNode.g = 0
-    firstNode.calculateH(goal)
-    firstNode.calcuateF()
     
     # Push firstnode to openset
     openSet.append(firstNode)
