@@ -4,7 +4,11 @@ from astar import *
 mapobj = Map_Obj(task=2)
 
 path = AStar(mapobj, mapobj.get_start_pos(), mapobj.get_goal_pos())
-print(len(path))
 
 mapobj.set_path_str_marker(path)
+
+# Write start and goal positon after path
+mapobj.set_goal_pos_str_marker()
+mapobj.set_start_pos_str_marker()
+
 mapobj.show_map()

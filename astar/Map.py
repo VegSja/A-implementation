@@ -262,8 +262,7 @@ class Map_Obj():
 
         return self.goal_pos
 
-    def set_start_pos_str_marker(self, start_pos: list[int, int],
-                                 themap: Union[np.ndarray, str]):
+    def set_start_pos_str_marker(self, themap: Union[np.ndarray, str] = None):
         """Sets the start position marker at `start_pos` in `map`
 
         Parameters
@@ -273,17 +272,19 @@ class Map_Obj():
         themap : np.ndarray or str
             Map in which we want to change the starting position
         """
+        if themap == None:
+            themap = self.str_map
+
         # Attempt to set the start position on the map
-        if self.int_map[start_pos[0]][start_pos[1]] == -1:
+        if self.int_map[self.start_pos[0]][self.start_pos[1]] == -1:
             self.print_map(self.str_map)
-            print('The selected start position, ' + str(start_pos) +
+            print('The selected start position, ' + str(self.start_pos) +
                   ' is not a valid position on the current map.')
             exit()
         else:
-            themap[start_pos[0]][start_pos[1]] = ' S '
+            themap[self.start_pos[0]][self.start_pos[1]] = ' S '
 
-    def set_goal_pos_str_marker(self, goal_pos: list[int, int],
-                                themap: Union[np.ndarray, str]):
+    def set_goal_pos_str_marker(self, themap: Union[np.ndarray, str] = None):
         """Set the goal position marker at `goal_pos` in `map`
 
         Parameters
@@ -293,14 +294,17 @@ class Map_Obj():
         themap : np.ndarray or str
             Map in which we want to change the goal position
         """
+        if themap == None:
+            themap = self.str_map
+
         # Attempt to set the goal position on the map
-        if self.int_map[goal_pos[0]][goal_pos[1]] == -1:
+        if self.int_map[self.goal_pos[0]][self.goal_pos[1]] == -1:
             self.print_map(self.str_map)
-            print('The selected goal position, ' + str(goal_pos) +
+            print('The selected goal position, ' + str(self.goal_pos) +
                   ' is not a valid position on the current map.')
             exit()
         else:
-            themap[goal_pos[0]][goal_pos[1]] = ' G '
+            themap[self.goal_pos[0]][self.goal_pos[1]] = ' G '
 
     def set_path_str_marker(self, path: list[list[int, int]]):
         for marker in path:
