@@ -308,7 +308,7 @@ class Map_Obj():
 
     def set_path_str_marker(self, path: list[list[int, int]]):
         for marker in path:
-            self.str_map[marker.position[0]][marker.position[1]] = ' ; '
+            self.str_map[marker.position[0]][marker.position[1]] = ' P '
 
     def show_map(self, themap: Union[np.ndarray, str] = None):
         """Draws `themap` as an image and shows it.
@@ -347,7 +347,8 @@ class Map_Obj():
             ' : ': (96, 96, 96),   # darkgrey
             ' ; ': (36, 36, 36),   # blackish
             ' S ': (255, 0, 255),  # magenta
-            ' G ': (0, 128, 255)   # cyan
+            ' G ': (0, 128, 255),   # cyan
+            ' P ': (15,128,15),  # Green
         }
         # Go through image and set pixel color for every position
         for y in range(height):
