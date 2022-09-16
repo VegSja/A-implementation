@@ -14,7 +14,6 @@ class AStarNode():
         self.g = 0
         self.h = 0
         self.f = self.h + self.g
-        self.status = status
         self.parent = parent
         self.kids = []
 
@@ -52,7 +51,7 @@ def propegate_path_improvements(node):
 
 def attach_and_eval(child, parent, goal):
     child.parent = parent
-    child.g = parent.g + distance(child.position, parent.position)
+    child.g = parent.g + 1
     child.calculateH(goal)
     child.calcuateF()
 
