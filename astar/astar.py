@@ -1,7 +1,4 @@
 from enum import Enum
-class State(Enum):
-    OPEN = 1
-    CLOSE = 2
 
 def distance(startPos, endPos):
     #Using Manhattan distance 
@@ -9,45 +6,43 @@ def distance(startPos, endPos):
 
 class AStarNode():
 
-    def __init__(self, parent=None, position=None, map_obj=None):
+    def __init__(self, parent=None, position=None, goal=None, cell_value=1):
         self.position = position
-        self.map_obj = map_obj
+        self.cell_value = cell_value
         self.parent = parent
-        self.calculateG(parent)
-        self.calculateH(map_obj.get_goal_pos())
-        self.f = self.h + self.g
         self.kids = []
+
+        if(parent != None):
+            self.g = parent.g + cell_value
+        else:
+            self.g = cell_value
+        self.h = distance(position, goal)
+        self.f = self.h + self.g
 
     def __lt__(self, other):
         return self.f < other.f
 
-    def calcuateF(self):
-        self.f = self.h + self.g
-
-    def calculateH(self, goal):
-        self.h = distance(self.position, goal) 
-
-    def calculateG(self, parent):
-        accumulated = 0
-        if parent != None:
-            accumulated = parent.g
-        self.g = self.map_obj.get_cell_value(self.position) + accumulated
 
     def generateKids(self, map_obj):
-        node = AStarNode(position=[self.position[0]+1, self.position[1]], map_obj=map_obj)
-        if(self.map_obj.get_cell_value(node.position) != -1):
+        goal = map_obj.get_goal_pos()
+        position=[self.position[0]+1, self.position[1]]
+        node = AStarNode(position=position, parent=self, cell_value=map_obj.get_cell_value(position), goal=goal)
+        if(node.cell_value != -1):
             self.kids.append(node)
 
-        node = AStarNode(position=[self.position[0]-1, self.position[1]], map_obj=map_obj)
-        if(self.map_obj.get_cell_value(node.position) != -1):
+        position=[self.position[0]-1, self.position[1]]
+        node = AStarNode(position=position, parent=self, cell_value=map_obj.get_cell_value(position), goal=goal)
+        if(node.cell_value != -1):
             self.kids.append(node)
 
-        node = AStarNode(position=[self.position[0], self.position[1]+1], map_obj=map_obj)
-        if(self.map_obj.get_cell_value(node.position) != -1):
+        position=[self.position[0], self.position[1]+1]
+        node = AStarNode(position=position, parent=self, cell_value=map_obj.get_cell_value(position), goal=goal)
+        if(node.cell_value != -1):
             self.kids.append(node)
 
-        node = AStarNode(position=[self.position[0], self.position[1]-1], map_obj=map_obj)
-        if(self.map_obj.get_cell_value(node.position) != -1):
+        position=[self.position[0], self.position[1]-1]
+        node = AStarNode(position=position, parent=self, cell_value=map_obj.get_cell_value(position), goal=goal)
+        if(node.cell_value != -1):
             self.kids.append(node)
 
 
@@ -58,9 +53,9 @@ def propegate_path_improvements(node):
 
 def attach_and_eval(child, parent, goal):
     child.parent = parent
-    child.calculateG(parent)
-    child.calculateH(goal)
-    child.calcuateF()
+    child.g = parent.g + child.cell_value 
+    child.h = distance(child.position, goal)
+    child.f = child.h + child.g
 
 def isInSet(node, closedSet):
     for closed in closedSet:
@@ -81,11 +76,9 @@ def retrace_path(endNode):
 def AStar(map_obj, start, goal):
     closedSet = []
     openSet = []
-    evaluated = []
 
     # Generate initial node
-    firstNode = AStarNode(position=start, map_obj=map_obj)
-    firstNode.g = 0
+    firstNode = AStarNode(position=start, goal=goal)
     
     # Push firstnode to openset
     openSet.append(firstNode)
@@ -98,16 +91,16 @@ def AStar(map_obj, start, goal):
         if (inspectedNode.position == goal):
             # A* was successfull
             print("A* finished!")
+            print(f"Inspected {len(closedSet)} nodes")
+            print(f"Total cost of path: {inspectedNode.g}")
             return retrace_path(inspectedNode)
             
 
         inspectedNode.generateKids(map_obj)
         for child in inspectedNode.kids:
-            # TODO: Handle if child has previously been created
             if not isInSet(child, openSet) and not isInSet(child, closedSet):
                 attach_and_eval(child, inspectedNode, goal)
                 openSet.append(child)
-                evaluated.append(child)
                 openSet.sort()
 
             elif inspectedNode.g + distance(inspectedNode.position, child.position) < child.g: #Found a cheaper path to child
